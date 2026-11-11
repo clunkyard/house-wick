@@ -1,0 +1,66 @@
+# Wick, of Lantern Row: side-on to its target, driving forward and back on
+# a steady beat and angled in or out to hold its range, leading its shots.
+# It keeps inside the safe zone, drives out of the storm and backs off when
+# crowded. Its coach turns four dials between ticks. Each reads 0 until the
+# coach sets it, and 0 is the robot's own sound baseline; each runs from -1
+# to 1.
+#
+#   param.aggression  holds closer (1, about 160) or further off (-1, about 440); 300 at 0
+#   param.reach       how far it fires from: 1 adds 250, -1 takes 250 off 700
+#   param.power       heavier (1) or lighter (-1) shots than the range suggests
+#   param.orbit       a slower (1, 5.5 s) or quicker (-1, 1.9 s) beat; 3.7 s at 0
+bot Wick
+modes 2d
+rulesets classic
+
+rule home priority 150 when zone-active and zone-distance > zone-radius * 0.75
+  turn clamp(angle(zone-bearing, heading) / 20, -1, 1)
+  drive clamp((zone-distance - zone-radius * 0.4) / 60, 0.2, 0.8 - 0.2 * (energy-fraction < 0.3))
+end
+
+# Out across the storm's path, on the side away from its centre: square to
+# its heading, leaning a third of the way to straight out.
+rule storm priority 140 when storm-distance < 80
+  turn clamp(angle(((storm-heading + 90 * clamp(angle(storm-bearing + 180, storm-heading) * 100, -1, 1)) + angle(storm-bearing + 180, (storm-heading + 90 * clamp(angle(storm-bearing + 180, storm-heading) * 100, -1, 1))) / 3), heading) / 20, -1, 1)
+  drive 1
+end
+
+# Crowded: reverse away on a hard turn. Ease the throttle on a low battery
+# so movement leaves enough regeneration to charge the next shot.
+rule evade priority 120 when contact and range < 150 - 50 * param.aggression
+  drive -0.8 + 0.35 * (energy-fraction < 0.3)
+  turn 0.9
+end
+
+rule engage priority 100 when contact
+  drive (1 - 2 * (wave(74 + 36 * param.orbit, 1) < 0)) * (0.72 - 0.3 * (energy-fraction < 0.3))
+  turn clamp(angle(bearing + 90 - (1 - 2 * (wave(74 + 36 * param.orbit, 1) < 0)) * clamp((range - (300 - 140 * param.aggression)) / 4, -35, 35), heading) / 20, -1, 1)
+  # Lead: the scan followed the last echo, so its angle to the bearing is
+  # the change in a tick. Classic shots do not carry our own speed, so add
+  # our crossing speed back (95 a second at full drive, 5443 in degrees).
+  aim-heading bearing + clamp((angle(bearing, scan-heading) * (abs(angle(bearing, scan-heading)) < 8) * 20 * range + 5443 * (1 - 2 * (wave(74 + 36 * param.orbit, 1) < 0)) * (0.72 - 0.3 * (energy-fraction < 0.3)) * sin(heading - bearing)) / clamp(range, shot-speed-base + shot-speed-per-power * power-max, shot-speed-base + shot-speed-per-power * power-min), -30, 30)
+end
+
+# The heaviest shot that arrives within a second, shifted by the coach.
+rule gun priority 90 when contact
+  scan-heading bearing
+  scan-arc 20
+  power clamp((shot-speed-base - range) / (0 - shot-speed-per-power) + param.power, power-min, power-max)
+  fire cooldown == 0 and range < 700 + 250 * param.reach and abs(aim-error) < 6 and energy >= fire-base + fire-per-power * power-max + 4
+end
+
+rule search-cue priority 12 when cue-present
+  drive 0.6 - 0.25 * (energy-fraction < 0.3)
+  turn clamp(angle(cue-bearing, heading) / 45, -1, 1)
+end
+
+# No target: wander on a curve that bends towards the middle.
+rule search-move priority 10 when true
+  drive 0.6 - 0.25 * (energy-fraction < 0.3)
+  turn clamp((cos(heading) * (height / 2 - y) - sin(heading) * (width / 2 - x)) / 80, -1, 1) * 0.7 + 0.25
+end
+
+rule search priority 5 when true
+  scan-heading scan-heading + 36
+  scan-arc 40
+end

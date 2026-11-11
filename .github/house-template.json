@@ -1,0 +1,63 @@
+{
+  "v": 1,
+  "repository": "clunkyard/house-wick",
+  "source": {
+    "botId": "2a5bd947-f1e8-4ed3-914c-53309cfca618",
+    "revisionId": "14ede759-70dc-4d69-919c-529f3fe7980b",
+    "manifestHash": "69a4ab786e0e46126801bab3db90edfa4ddfe334640daad17905c197abbc2a0c"
+  },
+  "visibleManifestHash": "69a4ab786e0e46126801bab3db90edfa4ddfe334640daad17905c197abbc2a0c",
+  "language": "vane",
+  "sourceFiles": [
+    {
+      "path": "bot.json",
+      "mode": 420,
+      "size": 983,
+      "sha256": "18a2781279a425e30634597c2842b05482387e96072b9406c5c26460efb0918f"
+    },
+    {
+      "path": "wick.vane",
+      "mode": 384,
+      "size": 3495,
+      "sha256": "ab4191bb280febfebc9a943afea2360599261e5016b54e929d3e3d2e9408df42"
+    }
+  ],
+  "directories": [],
+  "managed": [
+    {
+      "path": ".clunkyard-source.json",
+      "sha256": "ab302665ba7c8db3d69699c6b60d31a72b8b33984a1ff19df5407ae07d8ed203",
+      "mode": 420
+    },
+    {
+      "path": ".gitignore",
+      "sha256": "e8b41e5528b2d3a8ae4c5dabfcd32ef50c05fff41de096c3701059b5c68a80db",
+      "mode": 420
+    },
+    {
+      "path": "bot.json",
+      "sha256": "18a2781279a425e30634597c2842b05482387e96072b9406c5c26460efb0918f",
+      "mode": 420
+    },
+    {
+      "path": "LICENSE",
+      "sha256": "652cbd0ba5e21c5b7ee7a52b539cc9087b38b1bfc3ae0baacc6828c8dfdf2e95",
+      "mode": 420
+    },
+    {
+      "path": "Makefile",
+      "sha256": "b41bef136a1fec767be62431121a98d96259ccd8415fc3d71665b22efcd8f79d",
+      "mode": 420
+    },
+    {
+      "path": "README.md",
+      "sha256": "297dcfcaf5878977cca7ffadf639d42cbd52d53381b278b2728989f3237396fc",
+      "mode": 420
+    },
+    {
+      "path": "wick.vane",
+      "sha256": "ab4191bb280febfebc9a943afea2360599261e5016b54e929d3e3d2e9408df42",
+      "mode": 384
+    }
+  ]
+}
